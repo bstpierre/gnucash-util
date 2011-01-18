@@ -1,0 +1,3 @@
+#!/bin/sh
+
+gnucash-env python -m gnucash_util.import_freshbooks_invoices $*

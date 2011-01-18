@@ -1,0 +1,5 @@
+build/
+dist/
+gnucash_util.egg-info/
+*~
+*.pyc
