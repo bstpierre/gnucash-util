@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export PYTHONPATH=/opt/gnucash/lib/python2.6/site-packages
+/opt/gnucash/bin/gnucash-env python -m gnucash_util.invoice_pdf $*
