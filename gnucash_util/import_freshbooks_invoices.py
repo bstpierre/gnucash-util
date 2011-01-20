@@ -12,6 +12,7 @@ import csv
 import datetime
 import decimal
 import os
+import re
 import sys
 
 from gnucash import Session, GncNumeric
@@ -61,7 +62,8 @@ def import_invoice(import_invoice_number):
         client_id = client_ids[import_client_name]
         client = book.CustomerLookupByID(client_id)
         invoice_number = row[1]
-        entry_description = row[5]
+        item = row[5]
+        item_description = row[6]
         unit_cost = row[7]
         quantity = row[8]
         line_cost = row[12]
@@ -79,12 +81,28 @@ def import_invoice(import_invoice_number):
             invoice_date = datetime.datetime.strptime(row[2], '%Y-%m-%d')
             invoice.SetDateOpened(invoice_date)
 
+        entry_description = item
+        if item_description:
+            entry_description += " " + item_description
+
+        entry_date = invoice_date
+        match = re.search(r'\d{1,2}/\d{1,2}/\d{2,4}',
+                          item_description)
+        if match:
+            date_str = match.group(0)
+            if len(date_str) == 8:
+                entry_date = datetime.datetime.strptime(date_str,
+                                                        '%m/%d/%y')
+            else:
+                entry_date = datetime.datetime.strptime(date_str,
+                                                        '%m/%d/%Y')
+
         invoice_entry = Entry(book, invoice)
         invoice_entry.SetDescription(entry_description)
         invoice_entry.SetQuantity(gnc_numeric_from_string(quantity))
         invoice_entry.SetInvAccount(consulting_income)
         invoice_entry.SetInvPrice(gnc_numeric_from_string(unit_cost))
-        invoice_entry.SetDate(invoice_date)
+        invoice_entry.SetDate(entry_date)
         invoice_entry.SetDateEntered(invoice_date)
 
         if 'debug' in sys.argv:
