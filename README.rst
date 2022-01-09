@@ -1,3 +1,14 @@
+=========
+Abandoned
+=========
+
+This is no longer in active use; I've been using
+beancount_ for several years.
+
+.. _beancount: https://github.com/beancount/beancount
+
+This repo is archived and will eventually be deleted.
+
 ============
 gnucash-util
 ============
